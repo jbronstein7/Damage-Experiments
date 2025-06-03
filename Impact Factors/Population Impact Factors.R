@@ -2,24 +2,24 @@
 # Purpose: Normalize emissions with population
 # Needs: COBRA Output Files, Population_all csv
 # Assumes: COBRA was run successfully for all years
-# Last Updated: 5/30/2025
+# Last Updated: 6/3/2025
 # Author: Joe Bronstein
 #####################################################
 # Set working directory 
 # Get the machine name
-machine_name <- Sys.info()["nodename"]
+  machine_name <- Sys.info()["nodename"]
 
-if (machine_name == "LZ26JBRONSTE") {
-  setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA output files")
-} else if (machine_name == "D26265VWJBRONST") { # replace info below with your machine name and path to cobra output 
-  setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA output files")
-} else {
-  stop("Unknown machine name")
-}
+  if (machine_name == "Your Machine Name") {
+    setwd("C:/PATH/TO/COBRA_output_files")
+  } else if (machine_name == "Other Machine Name") { # replace info below with your machine name and path to cobra output 
+    setwd("C:/PATH/TO/COBRA_output_files")
+  } else {
+    stop("Unknown machine name")
+  }
 
-library(dplyr)  
+  library(dplyr)  
 
- # Set years 
+  # Set years 
     years <- seq(2030, 2050, by = 5)
   # Identifying pollutants
     pollutants <- c("PM", "SO2", "NOx")
@@ -31,51 +31,51 @@ library(dplyr)
     population_all <- read.csv("population_all.csv")
 
 # Initialize an empty dataframe to store results
-results <- data.frame()
+  results <- data.frame()
 
 # Loop through each combination of year, state, and pollutant
-for (year in years) {
-  for (state in states) {
-    for (pollutant in pollutants) {
-      for (type in type_list){
-      # Dynamically generate the dataset name
-      dataset_name <- paste0("ref_", pollutant, "_", year, "_", type, "_", state, ".csv")
+  for (year in years) {
+    for (state in states) {
+      for (pollutant in pollutants) {
+        for (type in type_list){
+        # Dynamically generate the dataset name
+          dataset_name <- paste0("ref_", pollutant, "_", year, "_", type, "_", state, ".csv")
       
-      if (file.exists(dataset_name)){
-      # Load the dataset; if it does not exist in the directory, it will skip it
-        dataset <- read.csv(dataset_name)
+        if (file.exists(dataset_name)){
+        # Load the dataset; if it does not exist in the directory, it will skip it
+          dataset <- read.csv(dataset_name)
         
-        dataset <- dataset %>%
-          filter(State != "") # Drop observations where state is blank ("total:" rows)
+          dataset <- dataset %>%
+            filter(State != "") # Drop observations where state is blank ("total:" rows)
         
-      # Add variable for intervention state (indicator)
-        dataset$int_state <- paste0(state)
+        # Add variable for intervention state (indicator)
+          dataset$int_state <- paste0(state)
         
-      # Load in population file 
-        population_year <- population_all %>% filter(Year == year)
-        dataset <- merge(
-          dataset, 
-          population_year[, c("State", "County", "TOTAL")],
-          by = c("State", "County"),
-          all.x = TRUE
-        )
+        # Load in population file 
+          population_year <- population_all %>% filter(Year == year)
+          dataset <- merge(
+            dataset, 
+            population_year[, c("State", "County", "TOTAL")],
+            by = c("State", "County"),
+            all.x = TRUE
+          )
         
-      # Multiply deltas by population
-        dataset$Delta.O3 <- as.numeric(dataset$Delta.O3) # NAs are ok, refer to the "Total:" columns
-        dataset$Delta.PM.2.5 <- as.numeric(dataset$Delta.PM.2.5) # NAs are ok, refer to the "Total:" columns
+        # Multiply deltas by population
+          dataset$Delta.O3 <- as.numeric(dataset$Delta.O3) # NAs are ok, refer to the "Total:" columns
+          dataset$Delta.PM.2.5 <- as.numeric(dataset$Delta.PM.2.5) # NAs are ok, refer to the "Total:" columns
         
-        dataset$O3_Pop <- (dataset$Delta.O3 * dataset$TOTAL) # multiplying O3 delta by total population for each county
-        dataset$PM_Pop <- (dataset$Delta.PM.2.5 * dataset$TOTAL) # multiplying PM delta by total population for each county
+          dataset$O3_Pop <- (dataset$Delta.O3 * dataset$TOTAL) # multiplying O3 delta by total population for each county
+          dataset$PM_Pop <- (dataset$Delta.PM.2.5 * dataset$TOTAL) # multiplying PM delta by total population for each county
         
         # Summarize the data
-        summarized <- dataset %>%
-          group_by(int_state, State) %>%  # Separate intervention state and sub state
-          summarise(
-            O3_Pop_int_sum = sum(O3_Pop, na.rm = TRUE),  # Sum O3_Pop
-            PM_Pop_int_sum = sum(PM_Pop, na.rm = TRUE),  # Sum PM_Pop
-            TOTAL_pop_sum = sum(TOTAL, na.rm = TRUE),    # Sum TOTAL
-            .groups = "drop"
-          ) %>%
+          summarized <- dataset %>%
+            group_by(int_state, State) %>%  # Separate intervention state and sub state
+            summarise(
+              O3_Pop_int_sum = sum(O3_Pop, na.rm = TRUE),  # Sum O3_Pop
+              PM_Pop_int_sum = sum(PM_Pop, na.rm = TRUE),  # Sum PM_Pop
+              TOTAL_pop_sum = sum(TOTAL, na.rm = TRUE),    # Sum TOTAL
+              .groups = "drop"
+            ) %>%
           mutate(
             year = year,
             source_type = type,
@@ -93,10 +93,10 @@ for (year in years) {
 }
 
 # Add in emissions changes file 
-  if (machine_name == "LZ26JBRONSTE") {
-  setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA inputs for batch")
-} else if (machine_name == "D26265VWJBRONST") { # replace info below with your machine name and path to cobra output 
-  setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA inputs for batch")
+  if (machine_name == "Your Machine Name") {
+  setwd("C:/PATH/TO/COBRA_input_files")
+} else if (machine_name == "Alternate Machine Name") { # replace info below with your machine name and path to cobra output 
+  setwd("C:/PATH/TO/COBRA_input_files")
 } else {
   stop("Unknown machine name")
 }
