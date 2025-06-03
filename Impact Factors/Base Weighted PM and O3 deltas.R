@@ -7,24 +7,23 @@
 #####################################################
 # Set working directory 
 # Get the machine name
-machine_name <- Sys.info()["nodename"]
+  machine_name <- Sys.info()["nodename"]
 
-if (machine_name == "LZ26JBRONSTE") {
-  setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA output files")
-} else if (machine_name == "D26265VWJBRONST") { # replace info below with your machine name and path to cobra output 
-  setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA output files")
-} else {
-  stop("Unknown machine name")
-}
-
-library(dplyr)  
+  if (machine_name == "Your Machine Name") {
+    setwd("C:/PATH/TO/COBRA_output_files")
+  } else if (machine_name == "Other Machine Name") { # replace info below with your machine name and path to cobra output 
+    setwd("C:/PATH/TO/COBRA_output_files")
+  } else {
+    stop("Unknown machine name")
+  }
+  library(dplyr)  
 
 # Set years 
   years <- seq(2030, 2050, by = 5)
 # Identifying pollutants
   pollutants <- c("PM", "SO2", "NOx")
 # Identifying source types 
-  types <- c("Area", "Other EGU", "Other", "Coal EGU")
+  types <- c("EGU Other", "EGU Coal", "Industry", "Fuels", "Building", "Highway", "Off-Highway",  "Other Area", "Other Point")
 # Identifying regions 
   regions <- c("South", "Midwest", "Northeast", "West")
 # Identifying states
@@ -89,10 +88,10 @@ library(dplyr)
   }
 
 # Add in emissions changes file 
-  if (machine_name == "LZ26JBRONSTE") {
-    setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA inputs for batch")
-  } else if (machine_name == "D26265VWJBRONST") { # replace info below with your machine name and path to cobra output 
-    setwd("C:/Users/jbronste/Documents/local_folder/CMAS-2024/COBRA inputs for batch")
+  if (machine_name == "Your Machine Name") {
+    setwd("C:/PATH/TO/COBRA_input_files")
+  } else if (machine_name == "Alternate Machine Name") { # replace info below with your machine name and path to cobra output 
+    setwd("C:/PATH/TO/COBRA_input_files")
   } else {
     stop("Unknown machine name")
   }
@@ -114,7 +113,7 @@ library(dplyr)
     )
 
 # Divide weighted averages by emissions changes 
-  dataset$base_wt_PM_ratio <- dataset$base_wt_PM_delta / dataset$Delta
-  dataset$base_wt_O3_ratio <- dataset$base_wt_O3_delta / dataset$Delta
+  dataset$base_wt_PM_IF<- dataset$base_wt_PM_delta / dataset$Delta
+  dataset$base_wt_O3_IF <- dataset$base_wt_O3_delta / dataset$Delta
   
-  write.csv(dataset, paste0("base_weighted_pm_o3.csv"))
+  write.csv(dataset, paste0("base_weighted_IF.csv"))
