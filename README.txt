@@ -7,6 +7,7 @@ Description of folders:
 Necessary input files: This folder contains all of the necessary input files that the provided code references.
 Generating the Input Files: This folder has the code files that will generate the necessary input files for the COBRA runs and the code to create and run the COBRA batch file. 
 Generating BPT Values Post Cobra: This folder contains the code to complete the BPT calculations after the COBRA runs have been completed. 
+Impact Factors: Contains code files to generate base-weighted and population-weighted impact factors. 
 
 
 Steps: 
@@ -25,3 +26,11 @@ FOLDER: Generating BPT Values Post Cobra
 
 3. Run calculations file
 This file will calculate the benefit per ton values. The first half of the code will calculate the change in emissions from the base files for each scenario. For this step you only need the "base-year" files provided in the Necessary Input Files folder. The second half of this code will identify the total benefits from each scenario, merge the benefits and emissions changes into one data frame, calculate the benefits per ton of each scenario, and convert those values to GLIMPSE units (1990$/short ton). For the second portion of the code, you will need to point to the path where your COBRA output is stored. This should be the same path identified as the output file path in your batch creation file. 
+
+FOLDER: Impact Factors
+
+4. Population Weighted Impact Factors
+Running this code will generate population weighted impact factors. These factors represent the change in PM or O3 concentrations that come from a 1 unit reduction of NOx, PM, or SO2, corresponding to a given policy scenario, with more weight given to changes in counties with the highest population. i.e. the NOx_2030_Area_Alabama will have 2 impact factors: one representing the change in PM concentrations from a 1 unit reduction of NOx and one representing the change in O3 concentrations from a 1 unit reduction in NOx, both for area sources, in AL, in 2030, with more weight given to higher population counties within that scenario. 
+
+4. Base Weighted Impact Factors
+Running this code will generate population weighted impact factors. These factors represent the change in PM or O3 concentrations that come from a 1 unit reduction of NOx, PM, or SO2, corresponding to a given policy scenario, with more weight given to changes in counties with the highest initial (base) concentrations. i.e. the NOx_2030_Area_Alabama will have 2 impact factors: one representing the change in PM concentrations from a 1 unit reduction of NOx and one representing the change in O3 concentrations from a 1 unit reduction in NOx, both for area sources, in AL, in 2030, with more weight given to counties with the worst initial air quality. 
