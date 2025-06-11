@@ -45,7 +45,7 @@
           data$type <- types$TYPE
           data$TIER1NAME <- types$TIER1NAME
           data$TIER2NAME <- types$TIER2NAME
-          # Change type to Area, Coal EGU, Other EGU, and Other
+          # Change types to match relevant categories
             data$type <- ifelse(data$TIER1NAME == "Fuel Combustion: Electric Utility", "EGU Other", data$type)
             data$type <- ifelse(data$TIER1NAME == "Fuel Combustion: Electric Utility" & data$TIER2NAME == "Coal", "EGU Coal", data$type)
             data$type <- ifelse(data$TIER1NAME == "Fuel Combustion: Industrial", "Industry", data$type)
